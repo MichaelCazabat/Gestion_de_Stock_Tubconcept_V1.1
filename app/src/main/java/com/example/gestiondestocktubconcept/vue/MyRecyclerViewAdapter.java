@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,10 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.gestiondestocktubconcept.R;
 import com.example.gestiondestocktubconcept.modele.Profil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+
+    private onItemClickListener mListener;
+
+    public interface onItemClickListener{
+        void onItemClick(int position);
+
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener){
+        mListener = listener;
+    }
 
     public String input1;
     public String input2;
@@ -27,6 +38,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private List<Profil> liste_produits;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private ImageView mDelete;
 
     // data is passed into the constructor
     MyRecyclerViewAdapter(Context context, List<Profil> data) {
@@ -76,6 +88,18 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             txt_prix = itemView.findViewById(R.id.tv_prix_produit);
             txt_quantite = itemView.findViewById(R.id.tv_quantite_produit);
             txt_description = itemView.findViewById(R.id.tv_description_produit);
+
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(mListener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            mListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
 
         @Override
@@ -105,5 +129,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
+
+
 
 }

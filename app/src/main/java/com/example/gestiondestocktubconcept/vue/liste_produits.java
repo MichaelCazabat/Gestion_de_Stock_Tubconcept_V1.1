@@ -38,7 +38,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class liste_produits extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener{
@@ -116,6 +115,13 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
         recyclerView.setAdapter(adapter);
 
 
+        adapter.setOnItemClickListener(new MyRecyclerViewAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                liste_produits.get(position);
+                Log.i("message", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            }
+        });
 
     }
 
