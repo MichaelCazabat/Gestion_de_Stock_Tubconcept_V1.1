@@ -46,6 +46,7 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
     List<Profil> liste_produits;
     MyRecyclerViewAdapter adapter;
 
+
     Spinner spinner;
     String URL ="https://run.mocky.io/v3/88daf293-af6f-44cc-949f-2d2278d47ff6";
     ArrayList<String> liste_categorie;
@@ -114,8 +115,9 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
-    }
 
+
+    }
 
     public boolean isEmpty(EditText editText){
         if (editText.getText().toString().equals("")){
@@ -156,7 +158,6 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
         requestQueue.add(stringRequest);
     }
 
-
     public void onButtonClick(View view){
 
         if(isEmpty(value_description) && isEmpty(value_nom) && isEmpty(value_prix) && isEmpty(value_quantite) && isEmpty(value_reference)){
@@ -176,11 +177,8 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-
+        Log.i("message", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     }
-
-
 
     private void ajout_un_item(String categorie,String reference,String nom,Double prix,Integer quantite,String description ) {
         Profil item = new Profil(categorie, reference, nom, prix, quantite, description);
@@ -247,6 +245,7 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
 
 
     }
+
 
 
 
