@@ -178,6 +178,7 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
             ajout_un_item(categorie,value_reference.getText().toString(),value_nom.getText().toString(),value_prix_double,value_quantite_int,value_description.getText().toString());
             // : 09/02/2021 quand tu mets une valeur a virgule dans quantité ou prix ca crash , convert la virgule en un point
             //résolu
+            //
 
 
         }else{
