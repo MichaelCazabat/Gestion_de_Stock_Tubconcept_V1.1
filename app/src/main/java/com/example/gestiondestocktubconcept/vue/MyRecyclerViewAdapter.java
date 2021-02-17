@@ -21,6 +21,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     public interface onItemClickListener{
         void onItemClick(int position);
+        void onDeleteClick(int position);
 
     }
 
@@ -88,6 +89,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             txt_prix = itemView.findViewById(R.id.tv_prix_produit);
             txt_quantite = itemView.findViewById(R.id.tv_quantite_produit);
             txt_description = itemView.findViewById(R.id.tv_description_produit);
+            mDelete = itemView.findViewById(R.id.imageView);
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -96,6 +98,17 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             mListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+            mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            mListener.onDeleteClick(position);
                         }
                     }
                 }

@@ -119,7 +119,13 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
             @Override
             public void onItemClick(int position) {
                 liste_produits.get(position);
-                Log.i("message", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                //Log.i("message", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                liste_produits.remove(position);
+                adapter.notifyItemRemoved(position);
             }
         });
 
