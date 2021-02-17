@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,8 +19,21 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.gestiondestocktubconcept.R;
 import com.example.gestiondestocktubconcept.modele.Profil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,7 +46,10 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
     List<Profil> liste_produits;
     MyRecyclerViewAdapter adapter;
 
-
+    Spinner spinner;
+    String URL ="https://run.mocky.io/v3/88daf293-af6f-44cc-949f-2d2278d47ff6";
+    ArrayList<String> liste_categorie;
+    String categorie;
 
     StringBuilder data = new StringBuilder();
 
@@ -55,9 +74,24 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste_produits);
+        liste_categorie=new ArrayList<>();
+        spinner=(Spinner)findViewById(R.id.spinner);
+        loadSpinnerData(URL);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                categorie =   spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // DO Nothing here
+            }
+        });
 
 
-        value_categorie =  findViewById(R.id.txt_input_categorie);
+
+        //value_categorie =  findViewById(R.id.txt_input_categorie);
         value_reference =  findViewById(R.id.txt_input_reference);
         value_nom = findViewById(R.id.txt_input_nom);
         value_prix =  findViewById(R.id.txt_input_prix);
@@ -91,13 +125,44 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
         return true;
     }
 
+    private void loadSpinnerData(String url) {
+        RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest=new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonObject=new JSONObject(response);
+
+                        JSONArray jsonArray=jsonObject.getJSONArray("produits");
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject jsonObject1=jsonArray.getJSONObject(i);
+                            categorie=jsonObject1.getString("nom_sous_categorie");
+                            liste_categorie.add(categorie);
+                        }
+
+                    spinner.setAdapter(new ArrayAdapter<String>(liste_produits.this, android.R.layout.simple_spinner_dropdown_item, liste_categorie));
+                }catch (JSONException e){e.printStackTrace();}
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
+    }
+
 
     public void onButtonClick(View view){
 
-        if(isEmpty(value_categorie) && isEmpty(value_description) && isEmpty(value_nom) && isEmpty(value_prix) && isEmpty(value_quantite) && isEmpty(value_reference)){
+        if(isEmpty(value_description) && isEmpty(value_nom) && isEmpty(value_prix) && isEmpty(value_quantite) && isEmpty(value_reference)){
             Double value_prix_double = Double.parseDouble(value_prix.getText().toString().replace(",","."));
             Integer value_quantite_int = Integer.parseInt(value_quantite.getText().toString().replace(",","."));
-            ajout_un_item(value_categorie.getText().toString(),value_reference.getText().toString(),value_nom.getText().toString(),value_prix_double,value_quantite_int,value_description.getText().toString());
+            ajout_un_item(categorie,value_reference.getText().toString(),value_nom.getText().toString(),value_prix_double,value_quantite_int,value_description.getText().toString());
             // : 09/02/2021 quand tu mets une valeur a virgule dans quantité ou prix ca crash , convert la virgule en un point
             //résolu
 

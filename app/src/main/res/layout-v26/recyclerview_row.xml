@@ -59,6 +59,9 @@
         android:visibility="visible"
         app:autoSizeMinTextSize="6sp"
         app:autoSizeTextType="none" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>
