@@ -118,12 +118,12 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
         adapter.setOnItemClickListener(new MyRecyclerViewAdapter.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                liste_produits.get(position);
-                //Log.i("message", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                //ici, le code va s'executer sur le click d'un ligne
             }
 
             @Override
             public void onDeleteClick(int position) {
+                // ici, le code va s'effectuer sur le click de l'image "delete"
                 liste_produits.remove(position);
                 adapter.notifyItemRemoved(position);
             }
@@ -205,55 +205,57 @@ public class liste_produits extends AppCompatActivity implements MyRecyclerViewA
     public void export (View view){
 
 
-       // /*  ++Creation des données++  */
+      // /*  ++Creation des données++  */
+//
+//
+//
+       int nbr_produits = adapter.getItemCount();
+       for (int s = 0; s < nbr_produits; s++) {
+           data.append("\n"+String.valueOf(liste_produits.get(s).convertToJSONArray()));
+           Log.i("message", String.valueOf(liste_produits.get(s).convertToJSONArray()));
+//
+       }
+//
+       String data1 = data.toString();
+       String data2 = data1.replaceAll("]",",");
+       String data3 = data2.replaceAll("\\[","");
+       String data4 = data3.replaceAll("\"","");
+       Log.i("message", data4);
+       // set la lenght a 0 c'est mieu pour la mémoire que d'en refaire une.
+       data.setLength(0);
+       data.append("Categorie,Reference,Nom,Prix,Quantites,Description");
+       data.append(data4);
+       /*  --Creation des données--  */
+//
+//
+       try {
+           /*  ++Sauvegarde des données dans l'appareil++ */
+//
+           FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
+           out.write((data.toString()).getBytes());
+           out.close();
+//
+           /*  --Sauvegarde des données dans l'appareil-- */
+//
+//
+           /*  ++Export des données++  */
+//
+           Context context = getApplicationContext();
+           File filelocation = new File(getFilesDir(), "data.csv");
+           Uri path = FileProvider.getUriForFile(context, "com.example.gestiondestocktubconcept.FileProvider", filelocation);
+           Intent fileIntent = new Intent(Intent.ACTION_SEND);
+           fileIntent.setType("text/csv");
+           fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
+           fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+           fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+           startActivity(Intent.createChooser(fileIntent, "Send mail"));
+//
+           /*  --Export des données--  */
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
 
 
-
-        int nbr_produits = adapter.getItemCount();
-        for (int s = 0; s < nbr_produits; s++) {
-            data.append("\n"+String.valueOf(liste_produits.get(s).convertToJSONArray()));
-            Log.i("message", String.valueOf(liste_produits.get(s).convertToJSONArray()));
-
-        }
-
-        String data1 = data.toString();
-        String data2 = data1.replaceAll("]",",");
-        String data3 = data2.replaceAll("\\[","");
-        String data4 = data3.replaceAll("\"","");
-        Log.i("message", data4);
-        // set la lenght a 0 c'est mieu pour la mémoire que d'en refaire une.
-        data.setLength(0);
-        data.append("Categorie,Reference,Nom,Prix,Quantites,Description");
-        data.append(data4);
-        /*  --Creation des données--  */
-
-
-        try {
-            /*  ++Sauvegarde des données dans l'appareil++ */
-
-            FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
-            out.write((data.toString()).getBytes());
-            out.close();
-
-            /*  --Sauvegarde des données dans l'appareil-- */
-
-
-            /*  ++Export des données++  */
-
-            Context context = getApplicationContext();
-            File filelocation = new File(getFilesDir(), "data.csv");
-            Uri path = FileProvider.getUriForFile(context, "com.example.gestiondestocktubconcept.FileProvider", filelocation);
-            Intent fileIntent = new Intent(Intent.ACTION_SEND);
-            fileIntent.setType("text/csv");
-            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
-            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
-            startActivity(Intent.createChooser(fileIntent, "Send mail"));
-
-            /*  --Export des données--  */
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
     }
